@@ -1,0 +1,8 @@
+dockercomposes
+*.log
+*.pyc
+__pycache__
+.idea
+*.html
+*.png
+*.jpeg
