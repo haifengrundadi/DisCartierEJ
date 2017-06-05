@@ -3,7 +3,7 @@
 
 
 # the apk place in container
-APK_NAME = "/apk_shell/xxxx.apk"
+APK_NAME = "/apk_shell/com.xingin.xhs-test-4.20.apk"
 
 # stf_url address
 STF_URL = "http://***.***.***.***:7100/api/v1/devices"
