@@ -7,3 +7,4 @@ __pycache__
 *.png
 *.jpeg
 *est_users.txt
+/resources/test_users.txt
