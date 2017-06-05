@@ -1,4 +1,4 @@
-/resources/dockercomposes/*
+/resources/dockercomposes/
 *.log
 *.pyc
 __pycache__
@@ -7,4 +7,3 @@ __pycache__
 *.png
 *.jpeg
 *est_users.txt
-/resources/test_users.txt
