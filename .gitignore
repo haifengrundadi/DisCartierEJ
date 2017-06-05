@@ -1,4 +1,4 @@
-dockercomposes/
+/resources/dockercomposes/*
 *.log
 *.pyc
 __pycache__
