@@ -7,7 +7,7 @@ adb devices
 
 adb connect {{DEVICES_NAME}}
 
-adb push {{APP_NAME}} /opt/node/
+adb push {{APK_NAME}} /opt/node/
 
 nohup appium &
 

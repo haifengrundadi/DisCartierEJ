@@ -1,27 +1,30 @@
 #!/bin/bash/
-#echo "Connect to remote devices and start appium"
-#read version, devices_url
-#adb connect devices_url
-#if [adb devices]; then
-#	appium
-#else
-#	sleep 5
-#	if [adb devices]; then
-#		appium
-#	else
-#		sleep 10
-#		if [adb devices]; then
-#			appium
-#		else
-#			exit
-#		fi
-#	fi
-#fi
+# -*- coding: utf-8 -*-
+
+adb kill-server
 
 adb devices
 
-adb connect {{device_address}}
+adb connect {{DEVICES_NAME}}
 
-adb push /apk_shell/app-Fir-release-4.16.020.apk  /opt/node/
+adb push {{APK_NAME}} /opt/node/
 
-appium
+nohup appium &
+
+sleep 2
+
+# check appium
+appium_ready() {
+    curl http://appium:4723/wd/hub> /dev/null 2>&1
+}
+
+a=0
+while !(appium_ready) && ((a<90));
+do
+    sleep 3
+    a=$[$a+3]
+    echo "waiting for appium ..."
+    nohup appium &
+done
+
+py.test -s {{CASE_NAME}}

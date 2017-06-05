@@ -3,81 +3,14 @@
 # littlewei_liu@163.com
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
-
-FROM java:8
-#   If you're reading this and have any feedback on how this image could be
-#   improved, please open an issue or a pull request so we can discuss it!
-ENV PATH $PATH:$JAVA_HOME/bin
-
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NONINTERACTIVE_SEEN true
-
-ENV ANDROID_SDK_URL="https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz" \
-    ANDROID_BUILD_TOOLS_VERSION=25.0.0 \
-    ANDROID_APIS="android-20,android-21,android-22,android-23,android-24" \
-    MAVEN_HOME="/usr/share/maven" \
-    ANDROID_HOME="/opt/android-sdk-linux"
-
-ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$ANT_HOME/bin:$MAVEN_HOME/bin:$GRADLE_HOME/bin
-
-RUN dpkg --add-architecture i386 && \
-          apt-get -qq update && \
-          apt-get -qq install -y curl libncurses5:i386 libstdc++6:i386 zlib1g:i386 && \
-
-#========================================
-# Includes Android SDK
-#========================================
-    curl -sL ${ANDROID_SDK_URL} | tar xz -C /opt && \
-    echo y | android update sdk -a -u -t platform-tools,${ANDROID_APIS},build-tools-${ANDROID_BUILD_TOOLS_VERSION} && \
-    chmod a+x -R $ANDROID_HOME && \
-    chown -R root:root $ANDROID_HOME && \
-
-    # Clean up
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    apt-get autoremove -y && \
-    apt-get clean
+FROM suifengdeshitou/appium-cartierej-android:base
 
 #=======================================
-# Display JAVA version
-#=======================================
-RUN java -version
-
-#=======================================
-# Includes node LTS version
-#=======================================
-ENV NODEJS_VERSION=6.9.1 PATH=$PATH:/opt/node/bin
-
-WORKDIR "/opt/node"
-
-RUN apt-get update -qqy && \
-    apt-get install -y curl ca-certificates --no-install-recommends && \
-    curl -sL https://nodejs.org/dist/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz | tar xz --strip-components=1 && \
-    npm install -g appium@1.5.3 && \
-    npm install appium-doctor -g && \
-    npm cache clean && \
-    apt-get remove --purge -y npm && \
-    apt-get autoremove --purge -y && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    apt-get clean
-
-#=======================================
-# Display node version
-#=======================================
-RUN node -v
-
-#=======================================
-# Expose default port of appium
-#=======================================
-EXPOSE 4723
-
-#=======================================
-# Check health of appium android
-#=======================================
-RUN appium-doctor --android
-
-#=======================================
-# app.sh include adb connect & appium 
+# app.sh include adb connect & appium
 # and client case
+# if you want change app_shell to other
+# name, you need to change app_shell to
+# other name in generator.py around line 65
 #=======================================
 RUN mkdir /app_shell
 COPY ./app.sh /app_shell/
@@ -96,15 +29,16 @@ RUN echo "Asia/shanghai" > /etc/timezone && \
 
 #=======================================
 # pull code from git
-#=======================================	
-
+#=======================================
 
 RUN git clone https://github.com/haifengrundadi/CartierEJ.git
 
-WORKDIR cartier
+WORKDIR CartierEJ
 
-RUN pip install -r requirements.txt #-i http://pypi.xiaohongshu.com/simple & mkdir /logs —trusted-host pypi.xiaohongshu.com
+RUN pip install -r requirements.txt
+
+RUN mkdir logs
 
 WORKDIR tests/smoketest
 
-CMD ["bash /app_shell/app.sh] 
+CMD ["bash /app_shell/app.sh]
